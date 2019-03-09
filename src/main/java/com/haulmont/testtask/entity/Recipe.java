@@ -18,7 +18,7 @@ public class Recipe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
     @Setter
-    private int id;
+    private long id;
 
     @Column(name = "description", nullable = false)
     @Getter

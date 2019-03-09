@@ -3,9 +3,7 @@ package com.haulmont.testtask.editor;
 import com.haulmont.testtask.entity.Pacient;
 import com.haulmont.testtask.services.PacientService;
 import com.vaadin.data.Property;
-import com.vaadin.data.Validator;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 
@@ -50,13 +48,6 @@ public class PacientEditor extends HorizontalSplitPanel implements ComponentCont
                     refreshPacientList();
                 }
             });
-
-            firstNameField.setValidationVisible(true);
-            firstNameField.setNullRepresentation("");
-            firstNameField.setNullSettingAllowed(true);
-            firstNameField.addValidator(new StringLengthValidator(
-                    "The name must be 2-15 letters (was {0})",
-                    2, 15, true));
 
             vlayout.addComponent(pacientTable);
             vlayout.setSizeUndefined();

@@ -68,12 +68,6 @@
             <version>2.4</version>
             <scope>provided</scope>
         </dependency>
-        <!--<dependency>
-            <groupId>hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <version>1.8.0.10</version>
-            <scope>test</scope>
-        </dependency>-->
         <!-- https://mvnrepository.com/artifact/org.hsqldb/hsqldb -->
         <dependency>
             <groupId>org.hsqldb</groupId>
@@ -81,6 +75,13 @@
             <version>2.4.1</version>
             <scope>test</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.vaadin.addons/numberfield-vaadin-7 -->
+        <dependency>
+            <groupId>org.vaadin.addons</groupId>
+            <artifactId>numberfield-vaadin-7</artifactId>
+            <version>0.1.0</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
         <dependency>
             <groupId>org.postgresql</groupId>

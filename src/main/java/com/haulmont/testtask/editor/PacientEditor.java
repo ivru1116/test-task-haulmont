@@ -4,6 +4,7 @@ import com.haulmont.testtask.entity.Pacient;
 import com.haulmont.testtask.services.PacientService;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.converter.StringToIntegerConverter;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 
@@ -16,7 +17,6 @@ public class PacientEditor extends HorizontalSplitPanel implements ComponentCont
         private final PacientService pacientService = new PacientService();
 
         private final TextField firstNameField = new TextField("First Name");
-
         private final TextField lastNameField = new TextField("Last Name");
         private final TextField patronymicField = new TextField("Patronymic");
         private final TextField phoneField = new TextField("Phone");
@@ -67,6 +67,7 @@ public class PacientEditor extends HorizontalSplitPanel implements ComponentCont
             hlayout.addComponent(updateButton);
             updateButton.addClickListener((Button.ClickEvent event) -> {
                 Pacient pac = (Pacient) pacientTable.getValue();
+                if (isValidFieldData()) {
                     pac.setFirstName(firstNameField.getValue().trim());
                     pac.setLastName(lastNameField.getValue().trim());
                     pac.setPatronymic(patronymicField.getValue().trim());
@@ -74,16 +75,11 @@ public class PacientEditor extends HorizontalSplitPanel implements ComponentCont
                     pacientService.updatePacient(pac);
                     Notification.show("Pacient updated");
                     refreshPacientList();
-            });
-
-            hlayout.addComponent(refreshButton);
-            refreshButton.addClickListener((Button.ClickEvent event) -> {
-                populateFields("", "", "", "");
-                refreshPacientList();
+                }
+                else Notification.show("Please insert the Name, Last name and Patronymic");
             });
 
             form.addComponent(hlayout);
-
             form.addComponent(firstNameField);
             firstNameField.setRequired(true);
             firstNameField.setRequiredError("First Name cannot be empty");
@@ -94,22 +90,38 @@ public class PacientEditor extends HorizontalSplitPanel implements ComponentCont
             patronymicField.setRequired(true);
             patronymicField.setRequiredError("Patronymic cannot be empty");
             form.addComponent(phoneField);
-            phoneField.setRequired(true);
+
+            hlayout.addComponent(refreshButton);
+            refreshButton.addClickListener((Button.ClickEvent event) -> {
+                populateFields("", "", "", "");
+                refreshPacientList();
+            });
 
             form.addComponent(addNewButton);
             addNewButton.addClickListener((Button.ClickEvent event) -> {
-                String phone = phoneField.getValue();
-                Pacient pac = new Pacient(firstNameField.getValue(), lastNameField.getValue(),
-                        patronymicField.getValue(), new Integer(phone));
-                if (pac != null) {
-                    pacientService.savePacient(pac);
-                    pacient.addBean(pac);
+                if(isValidFieldData()) {
+                    phoneField.setConverter(new StringToIntegerConverter());
+                    String phone = phoneField.getValue();
+                    Pacient pac = new Pacient(firstNameField.getValue(), lastNameField.getValue(),
+                            patronymicField.getValue(), new Integer(phone));
+                    if (pac != null) {
+                        pacientService.savePacient(pac);
+                        pacient.addBean(pac);
+                    }
                 }
+                else Notification.show("Please insert the Name, Last name and Patronymic");
             });
+
             return form;
 
         }
 
+        private boolean isValidFieldData() {
+            if (firstNameField.isValid() && lastNameField.isValid() && patronymicField.isValid()){
+                return true;
+            }
+            return false;
+        }
         private void refreshPacientList() {
             pacient.removeAllItems();
             pacient.addAll(pacientService.findAllPacients());

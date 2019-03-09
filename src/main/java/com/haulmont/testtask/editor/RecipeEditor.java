@@ -85,17 +85,20 @@ public class RecipeEditor extends HorizontalSplitPanel implements ComponentConta
         hlayout.addComponent(updateButton);
         updateButton.addClickListener((Button.ClickEvent event) -> {
             Recipe rec = (Recipe) recipeTable.getValue();
-            rec.setDescription(descriptionField.getValue().trim());
-            rec.setCreation(dateCreationField.getValue());
-            rec.setExposure(dateExposureField.getValue());
-            rec.setPriority((RecipePriority) recipePriorityCombo.getValue());
-            rec.setDoctors((String) doctorCombo.getValue());
-            rec.setPacients((String) pacientCombo.getValue());
-            recipeService.updateRecipe(rec);
-            Notification.show("Recipe updated");
-            refreshRecipeList();
-            refreshDoctorList();
-            refreshPacientList();
+            if(isValidFieldData()) {
+                rec.setDescription(descriptionField.getValue().trim());
+                rec.setCreation(dateCreationField.getValue());
+                rec.setExposure(dateExposureField.getValue());
+                rec.setPriority((RecipePriority) recipePriorityCombo.getValue());
+                rec.setDoctors((String) doctorCombo.getValue());
+                rec.setPacients((String) pacientCombo.getValue());
+                recipeService.updateRecipe(rec);
+                Notification.show("Recipe updated");
+                refreshRecipeList();
+                refreshDoctorList();
+                refreshPacientList();
+            }
+            else Notification.show("Please insert the Description");
         });
 
         hlayout.addComponent(refreshButton);
@@ -126,18 +129,27 @@ public class RecipeEditor extends HorizontalSplitPanel implements ComponentConta
 
         form.addComponent(addNewButton);
         addNewButton.addClickListener((Button.ClickEvent event) -> {
-            Recipe pac = new Recipe(descriptionField.getValue(), dateCreationField.getValue(),
-                     dateExposureField.getValue(), (String)doctorCombo.getValue(),
-                    (String)pacientCombo.getValue(), (RecipePriority)recipePriorityCombo.getValue());
-            if (pac != null) {
-                recipeService.saveRecipe(pac);
-                recipe.addBean(pac);
+            if(isValidFieldData()) {
+                Recipe pac = new Recipe(descriptionField.getValue(), dateCreationField.getValue(),
+                        dateExposureField.getValue(), (String) doctorCombo.getValue(),
+                        (String) pacientCombo.getValue(), (RecipePriority) recipePriorityCombo.getValue());
+                if (pac != null) {
+                    recipeService.saveRecipe(pac);
+                    recipe.addBean(pac);
+                }
             }
+            else Notification.show("Please insert the Description");
         });
         return form;
 
     }
 
+    private boolean isValidFieldData() {
+        if (descriptionField.isValid()){
+            return true;
+        }
+        return false;
+    }
     private void refreshRecipeList() {
         recipe.removeAllItems();
         recipe.addAll(recipeService.findAllRecipes());

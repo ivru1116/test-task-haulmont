@@ -2,10 +2,8 @@ package com.haulmont.testtask.editor;
 
 import com.haulmont.testtask.entity.Doctor;
 import com.haulmont.testtask.services.DoctorService;
-import com.haulmont.testtask.services.RecipeService;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 
@@ -17,7 +15,6 @@ public class DoctorEditor extends HorizontalSplitPanel implements ComponentConta
     private final Table doctorTable = new Table();
 
     private final DoctorService doctorService = new DoctorService();
-    private final RecipeService recipeService = new RecipeService();
 
     private final TextField firstNameField = new TextField("First Name");
     private final TextField lastNameField = new TextField("Last Name");
@@ -72,13 +69,16 @@ public class DoctorEditor extends HorizontalSplitPanel implements ComponentConta
         hlayout.addComponent(updateButton);
         updateButton.addClickListener((Button.ClickEvent event) -> {
             Doctor doc = (Doctor) doctorTable.getValue();
-            doc.setFirstName(firstNameField.getValue().trim());
-            doc.setLastName(lastNameField.getValue().trim());
-            doc.setPatronymic(patronymicField.getValue().trim());
-            doc.setSpecialization(specializationField.getValue().trim());
-            doctorService.updateDoctor(doc);
-            Notification.show("Doctor updated");
-            refreshDoctorList();
+            if (isValidFieldData()) {
+                doc.setFirstName(firstNameField.getValue().trim());
+                doc.setLastName(lastNameField.getValue().trim());
+                doc.setPatronymic(patronymicField.getValue().trim());
+                doc.setSpecialization(specializationField.getValue().trim());
+                doctorService.updateDoctor(doc);
+                Notification.show("Doctor updated");
+                refreshDoctorList();
+            }
+            else Notification.show("Please insert the Name, Last name, Patronymic and Specialization");
         });
 
         hlayout.addComponent(refreshButton);
@@ -105,15 +105,26 @@ public class DoctorEditor extends HorizontalSplitPanel implements ComponentConta
 
         form.addComponent(addNewButton);
         addNewButton.addClickListener((Button.ClickEvent event) -> {
-            Doctor doc = new Doctor(firstNameField.getValue(), lastNameField.getValue(),
-                    patronymicField.getValue(), specializationField.getValue());
-            if (doc != null) {
-                doctorService.saveDoctor(doc);
-                doctor.addBean(doc);
+            if (isValidFieldData()) {
+                Doctor doc = new Doctor(firstNameField.getValue(), lastNameField.getValue(),
+                        patronymicField.getValue(), specializationField.getValue());
+                if (doc != null) {
+                    doctorService.saveDoctor(doc);
+                    doctor.addBean(doc);
+                }
             }
+            else Notification.show("Please insert the Name, Last name, Patronymic and Specialization");
         });
         return form;
 
+    }
+
+    private boolean isValidFieldData() {
+        if (firstNameField.isValid() && lastNameField.isValid() && patronymicField.isValid() &&
+                specializationField.isValid()){
+            return true;
+        }
+        return false;
     }
 
     private void refreshDoctorList() {

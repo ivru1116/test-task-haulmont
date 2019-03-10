@@ -14,8 +14,8 @@ import com.vaadin.ui.themes.ValoTheme;
 
 public class MainUI extends UI {
 
-    TabSheet tabSheet = new TabSheet();
-    VerticalLayout vlayout = new VerticalLayout();
+    private TabSheet tabSheet = new TabSheet();
+    private VerticalLayout vlayout = new VerticalLayout();
 
     @Override
     protected void init(VaadinRequest request) {

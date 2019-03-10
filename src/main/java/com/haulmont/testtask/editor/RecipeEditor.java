@@ -19,7 +19,7 @@ import java.util.EnumSet;
 public class RecipeEditor extends HorizontalSplitPanel implements ComponentContainer {
 
     private final BeanItemContainer<Recipe> recipe = new BeanItemContainer<>(Recipe.class);
-    final BeanItemContainer<RecipePriority> enumContainer = new BeanItemContainer<>(RecipePriority.class);
+    private final BeanItemContainer<RecipePriority> enumContainer = new BeanItemContainer<>(RecipePriority.class);
     private final Table recipeTable = new Table();
 
     private final RecipeService recipeService = new RecipeService();
@@ -85,7 +85,6 @@ public class RecipeEditor extends HorizontalSplitPanel implements ComponentConta
         hlayout.addComponent(updateButton);
         updateButton.addClickListener((Button.ClickEvent event) -> {
             Recipe rec = (Recipe) recipeTable.getValue();
-            if(isValidFieldData()) {
                 rec.setDescription(descriptionField.getValue().trim());
                 rec.setCreation(dateCreationField.getValue());
                 rec.setExposure(dateExposureField.getValue());
@@ -97,8 +96,6 @@ public class RecipeEditor extends HorizontalSplitPanel implements ComponentConta
                 refreshRecipeList();
                 refreshDoctorList();
                 refreshPacientList();
-            }
-            else Notification.show("Please insert the Description");
         });
 
         hlayout.addComponent(refreshButton);
@@ -130,13 +127,11 @@ public class RecipeEditor extends HorizontalSplitPanel implements ComponentConta
         form.addComponent(addNewButton);
         addNewButton.addClickListener((Button.ClickEvent event) -> {
             if(isValidFieldData()) {
-                Recipe pac = new Recipe(descriptionField.getValue(), dateCreationField.getValue(),
+                Recipe rec = new Recipe(descriptionField.getValue(), dateCreationField.getValue(),
                         dateExposureField.getValue(), (String) doctorCombo.getValue(),
                         (String) pacientCombo.getValue(), (RecipePriority) recipePriorityCombo.getValue());
-                if (pac != null) {
-                    recipeService.saveRecipe(pac);
-                    recipe.addBean(pac);
-                }
+                recipeService.saveRecipe(rec);
+                recipe.addBean(rec);
             }
             else Notification.show("Please insert the Description");
         });
@@ -145,10 +140,7 @@ public class RecipeEditor extends HorizontalSplitPanel implements ComponentConta
     }
 
     private boolean isValidFieldData() {
-        if (descriptionField.isValid()){
-            return true;
-        }
-        return false;
+        return descriptionField.isValid();
     }
     private void refreshRecipeList() {
         recipe.removeAllItems();

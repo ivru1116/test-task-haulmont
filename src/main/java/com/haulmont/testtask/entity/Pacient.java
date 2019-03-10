@@ -52,10 +52,4 @@ public class Pacient {
         recipes = new ArrayList<>();
     }
 
-    @Override
-    public String toString() {
-        return String.format("Customer[id=%d, firstName='%s', lastName='%s', patronymic='%s', phone='%s']", id,
-                firstName, lastName, patronymic, phone);
-    }
-
 }

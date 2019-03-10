@@ -21,8 +21,6 @@ public class DoctorEditor extends HorizontalSplitPanel implements ComponentConta
     private final TextField patronymicField = new TextField("Patronymic");
     private final TextField specializationField = new TextField("Specialization");
 
-    private final ComboBox recipeCombo = new ComboBox("Recipe");
-
     private final Button addNewButton = new Button("Add New");
     private final Button updateButton = new Button("Update");
     private final Button removeButton = new Button("Remove");
@@ -69,7 +67,6 @@ public class DoctorEditor extends HorizontalSplitPanel implements ComponentConta
         hlayout.addComponent(updateButton);
         updateButton.addClickListener((Button.ClickEvent event) -> {
             Doctor doc = (Doctor) doctorTable.getValue();
-            if (isValidFieldData()) {
                 doc.setFirstName(firstNameField.getValue().trim());
                 doc.setLastName(lastNameField.getValue().trim());
                 doc.setPatronymic(patronymicField.getValue().trim());
@@ -77,8 +74,6 @@ public class DoctorEditor extends HorizontalSplitPanel implements ComponentConta
                 doctorService.updateDoctor(doc);
                 Notification.show("Doctor updated");
                 refreshDoctorList();
-            }
-            else Notification.show("Please insert the Name, Last name, Patronymic and Specialization");
         });
 
         hlayout.addComponent(refreshButton);
@@ -108,10 +103,8 @@ public class DoctorEditor extends HorizontalSplitPanel implements ComponentConta
             if (isValidFieldData()) {
                 Doctor doc = new Doctor(firstNameField.getValue(), lastNameField.getValue(),
                         patronymicField.getValue(), specializationField.getValue());
-                if (doc != null) {
-                    doctorService.saveDoctor(doc);
-                    doctor.addBean(doc);
-                }
+                doctorService.saveDoctor(doc);
+                doctor.addBean(doc);
             }
             else Notification.show("Please insert the Name, Last name, Patronymic and Specialization");
         });
@@ -120,11 +113,8 @@ public class DoctorEditor extends HorizontalSplitPanel implements ComponentConta
     }
 
     private boolean isValidFieldData() {
-        if (firstNameField.isValid() && lastNameField.isValid() && patronymicField.isValid() &&
-                specializationField.isValid()){
-            return true;
-        }
-        return false;
+        return firstNameField.isValid() && lastNameField.isValid() && patronymicField.isValid() &&
+                specializationField.isValid();
     }
 
     private void refreshDoctorList() {

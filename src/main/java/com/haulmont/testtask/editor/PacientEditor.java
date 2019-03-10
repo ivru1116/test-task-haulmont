@@ -67,7 +67,6 @@ public class PacientEditor extends HorizontalSplitPanel implements ComponentCont
             hlayout.addComponent(updateButton);
             updateButton.addClickListener((Button.ClickEvent event) -> {
                 Pacient pac = (Pacient) pacientTable.getValue();
-                if (isValidFieldData()) {
                     pac.setFirstName(firstNameField.getValue().trim());
                     pac.setLastName(lastNameField.getValue().trim());
                     pac.setPatronymic(patronymicField.getValue().trim());
@@ -75,8 +74,6 @@ public class PacientEditor extends HorizontalSplitPanel implements ComponentCont
                     pacientService.updatePacient(pac);
                     Notification.show("Pacient updated");
                     refreshPacientList();
-                }
-                else Notification.show("Please insert the Name, Last name and Patronymic");
             });
 
             form.addComponent(hlayout);
@@ -104,10 +101,8 @@ public class PacientEditor extends HorizontalSplitPanel implements ComponentCont
                     String phone = phoneField.getValue();
                     Pacient pac = new Pacient(firstNameField.getValue(), lastNameField.getValue(),
                             patronymicField.getValue(), new Integer(phone));
-                    if (pac != null) {
-                        pacientService.savePacient(pac);
-                        pacient.addBean(pac);
-                    }
+                    pacientService.savePacient(pac);
+                    pacient.addBean(pac);
                 }
                 else Notification.show("Please insert the Name, Last name and Patronymic");
             });
@@ -117,10 +112,7 @@ public class PacientEditor extends HorizontalSplitPanel implements ComponentCont
         }
 
         private boolean isValidFieldData() {
-            if (firstNameField.isValid() && lastNameField.isValid() && patronymicField.isValid()){
-                return true;
-            }
-            return false;
+            return firstNameField.isValid() && lastNameField.isValid() && patronymicField.isValid();
         }
         private void refreshPacientList() {
             pacient.removeAllItems();
